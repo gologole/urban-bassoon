@@ -30,8 +30,7 @@ func ServiceLogin(db gorm.DB, UserInput sqllite.LoginInput) (sqllite.UserModel, 
 	return model, nil
 }
 
-func ServiceRegistrationUser(db gorm.DB, data ServiceLoginInput) {
-	login := data.Input.Login
-	password := data.Input.Password
-	sqllite.CreateUser(db, login, password)
+func ServiceRegistrationUser(db gorm.DB, data sqllite.LoginInput) {
+
+	sqllite.CreateUser(db, data.Login, data.Password)
 }

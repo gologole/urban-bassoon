@@ -13,10 +13,11 @@ import (
 
 func Handlereg(db gorm.DB) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "registration.html")
+		http.ServeFile(w, r, "reg.html")
 	})
 
-	http.HandleFunc("/handleClick", strangefunc(db))
+	http.HandleFunc("/handleClick", loginstrangefunc(db))
+	http.HandleFunc("/handleregclick", regstrangefunc(db))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -25,13 +26,13 @@ func Handlereg(db gorm.DB) {
 	fmt.Println("Server is starting")
 }
 
-func strangefunc(db gorm.DB) http.HandlerFunc {
+func loginstrangefunc(db gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		handleJSONRequest(w, r, db)
+		LoginJSONinput(w, r, db)
 	}
 }
 
-func handleJSONRequest(w http.ResponseWriter, r *http.Request, db gorm.DB) {
+func LoginJSONinput(w http.ResponseWriter, r *http.Request, db gorm.DB) {
 	// Check the request method
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -65,6 +66,38 @@ func handleJSONRequest(w http.ResponseWriter, r *http.Request, db gorm.DB) {
 	}
 	fmt.Println("login=", login)
 	// Send a response
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func regstrangefunc(db gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		RegJSONInput(w, r, db)
+	}
+}
+
+func RegJSONInput(w http.ResponseWriter, r *http.Request, db gorm.DB) {
+	// Check the request method
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Decode the JSON packet from the request body
+	var data sqllite.LoginInput
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println("Error decoding JSON:", err)
+		return
+	}
+
+	var response = map[string]interface{}{}
+	//РЕГИСТРАЦИЯ+++
+	users.ServiceRegistrationUser(db, data)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

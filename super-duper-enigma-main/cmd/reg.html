@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .registration-form {
+            width: 350px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #0091c2;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #0091c2;
+            color: #ffffff;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #0075a2;
+        }
+
+        #registerButton {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+
+        #registerButton:hover {
+            background-color: #5a6268;
+        }
+    </style>
+
+</head>
+<body>
+<div class="registration-form">
+    <h2>Регистрация или Вход</h2>
+    <form>
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" id="button">Войти</button>
+            <button type="submit" id="registerButton">Зарегистрироваться</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function CopyText(inputId){
+        const input = document.getElementById(inputId).value;
+        return input
+    }
+
+
+    document.getElementById("button").addEventListener("click", function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+        const login = CopyText("username");
+        const password = CopyText("password");
+
+        const JSONFile = {
+            login,
+            password
+        };
+
+        fetch("/handleClick", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(JSONFile)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            });
+    });
+
+
+    // Обработчик событий кнопки регистрации
+    document.getElementById("registerButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+        const login = CopyText("username");
+        const password = CopyText("password");
+
+        const JSONFile = {
+            login,
+            password
+        };
+
+        fetch("/handleregclick", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(JSONFile)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            });
+    });
+</script>
+</body>
+</html>

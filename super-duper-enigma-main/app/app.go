@@ -11,11 +11,9 @@ func Run() {
 
 	db := users.CreateDB()
 
-	test := users.ServiceLoginInput{
-		sqllite.LoginInput{
-			"admin",
-			"admin",
-		},
+	test := sqllite.LoginInput{
+		"admin",
+		"admin",
 	}
 
 	users.ServiceRegistrationUser(db, test)
