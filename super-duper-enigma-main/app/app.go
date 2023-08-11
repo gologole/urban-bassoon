@@ -1,11 +1,10 @@
 package app
 
 import (
-	"fmt"
 	"forummodule/delivery/http"
 	"forummodule/service/users"
 	"forummodule/sqllite"
-	"log"
+	"gorm.io/gorm"
 )
 
 func Run() {
@@ -14,30 +13,17 @@ func Run() {
 
 	test := users.ServiceLoginInput{
 		sqllite.LoginInput{
-			"admin1",
-			"admin1",
+			"admin",
+			"admin",
 		},
 	}
 
-	test2 := users.ServiceLoginInput{
-		sqllite.LoginInput{
-			"admin2",
-			"admin2",
-		},
-	}
 	users.ServiceRegistrationUser(db, test)
 
-	model, err := users.ServiceLogin(db, test2)
-	if err != nil {
-		log.Println("Пользователя не существует")
-	}
-
-	fmt.Print(model)
-
-	//go http.Handlereg()
+	http.Handlereg(db)
 
 }
 
-func StartServer() {
-	go http.Handlereg()
+func StartServer(db gorm.DB) {
+	http.Handlereg(db)
 }

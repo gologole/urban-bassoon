@@ -77,6 +77,7 @@ func SetUser(db gorm.DB, user UserModel) {
 	db.Save(&user)
 
 	fmt.Println("User created successfully")
+	fmt.Println(user)
 }
 
 // Функция для поиска пользователя по логину и паролю
@@ -84,10 +85,10 @@ func Login(db gorm.DB, username string, password string) (UserModel, error) {
 	user := UserModel{}
 
 	// Находим первого пользователя, у которого логин и пароль совпадают с переданными значениями
+	// в душе не чаю заглавные ли здесь должны быть буквы
 	err := db.Where("Username = ? AND Password = ?", username, password).First(&user).Error
 	if err != nil {
 		return UserModel{}, err // возращаем пустую структуру и ошибку, если пользователь не найден
 	}
-
 	return user, nil // возвращаем структуру пользователя
 }

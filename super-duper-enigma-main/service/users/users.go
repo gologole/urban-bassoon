@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"forummodule/sqllite"
 	"gorm.io/gorm"
 )
@@ -18,10 +19,11 @@ func CreateDB() gorm.DB {
 	return db
 }
 
-func ServiceLogin(db gorm.DB, UserInput ServiceLoginInput) (sqllite.UserModel, error) {
-	login := UserInput.Input.Login
-	password := UserInput.Input.Password
-	model, err := sqllite.Login(db, login, password)
+func ServiceLogin(db gorm.DB, UserInput sqllite.LoginInput) (sqllite.UserModel, error) {
+	fmt.Println(UserInput)
+	//fmt.Println("login ", login)
+	//fmt.Println(" pass ", password)
+	model, err := sqllite.Login(db, UserInput.Login, UserInput.Password)
 	if err != nil {
 		return sqllite.UserModel{}, err
 	}
