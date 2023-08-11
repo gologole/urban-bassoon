@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .registration-form {
+            width: 300px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .registration-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+
+<div class="registration-form">
+    <h2>Регистрация</h2>
+    <form>
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" id="button">Отправить</button>
+        </div>
+
+        </form>
+</div>
+
+<script>/*Данный код добавляет обработчик события "click" на элемент с идентификатором "button".
+    Когда происходит клик на этом элементе, выполняется функция.
+
+
+    Внутри функции происходит отправка HTTP-запроса методом POST на путь "/handleClick"
+     с использованием функции fetch(). теле запроса передается пустой объект, преобразованный в формат
+     JSON с помощью функции JSON.stringify().
+
+    Заголовки запроса указывают, что тип контента является "application/json".
+
+    После отправки запроса, используется метод then() для обработки ответа от сервера.
+    начала вызывается метод response.json(), который преобразует ответ в формат JSON. Затем, в следующем методе then(), данные из ответа выводятся в консоль с помощью console.log(data).
+
+
+    Таким образом, данный код выполняет отправку POST-запроса на сервер при клике на элемент с
+     идентификатором "button" и выводит ответ сервера консоль.
+     */
+//ФУНКЦИЯ КОПИРОВАНИЯ ТЕКСТА ИЗ ИНПУТА
+function CopyText(inputId){
+    const input = document.getElementById(inputId).value;
+    return input
+}
+
+
+document.getElementById("button").addEventListener("click", function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+    const login = CopyText("username");
+    const password = CopyText("password");
+
+    const JSONFile = {
+        login,
+        password
+    };
+
+    fetch("/handleClick", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(JSONFile)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });
+});
+</script>
+
+
+</body>
+</html>
