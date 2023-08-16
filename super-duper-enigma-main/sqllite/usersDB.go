@@ -71,13 +71,12 @@ func CreateUser(db gorm.DB, login, password string) {
 
 // создание пользователя
 func SetUser(db gorm.DB, user UserModel) {
-
 	db.Create(&user)
 
 	db.Save(&user)
 
 	fmt.Println("User created successfully")
-	fmt.Println(user)
+
 }
 
 // Функция для поиска пользователя по логину и паролю
@@ -91,4 +90,17 @@ func Login(db gorm.DB, username string, password string) (UserModel, error) {
 		return UserModel{}, err // возращаем пустую структуру и ошибку, если пользователь не найден
 	}
 	return user, nil // возвращаем структуру пользователя
+}
+
+// возвращает тру если пользователя не существует
+func TryLoginforReg(db gorm.DB, user LoginInput) bool {
+	// Поиск пользователя по логину и паролю
+	var result UserModel
+	query := db.Where("username = ? ", user.Login)
+	query.Find(&result)
+	if result.Username == "" {
+		return false
+	}
+	return true
+
 }

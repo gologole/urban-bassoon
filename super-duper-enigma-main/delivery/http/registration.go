@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"forummodule/service/users"
 	"forummodule/sqllite"
@@ -51,17 +52,27 @@ func LoginJSONinput(w http.ResponseWriter, r *http.Request, db gorm.DB) {
 
 	var response = map[string]interface{}{}
 	//ЛОГИН+++
-	login, err := users.ServiceLogin(db, data)
-	if err != nil {
+	var ers error
+	b := sqllite.TryLoginforReg(db, data)
+	if b == false {
+		ers = errors.New("User didnt reg")
+	}
+	if data.Login == "" || data.Password == "" {
+		ers = errors.New("Login and password cant be empty")
+	}
+
+	login, er := users.ServiceLogin(db, data)
+	if er != nil {
 		//переадресация на страницу с упс через вызов функции
-		fmt.Println("err=", err)
+		fmt.Println("err=", er)
 		response = map[string]interface{}{
-			"user": "not found",
+			"user": ers.Error(),
 		}
 	} else {
 		//переадресация на главную страницу через вызов функции
 		response = map[string]interface{}{
-			"user": "found",
+			"user":      "found",
+			"usermodel": login,
 		}
 	}
 	fmt.Println("login=", login)
@@ -97,7 +108,16 @@ func RegJSONInput(w http.ResponseWriter, r *http.Request, db gorm.DB) {
 
 	var response = map[string]interface{}{}
 	//РЕГИСТРАЦИЯ+++
-	users.ServiceRegistrationUser(db, data)
+	er := users.ServiceRegistrationUser(db, data)
+	if er == nil {
+		response = map[string]interface{}{
+			"user": "is registrated",
+		}
+	} else {
+		response = map[string]interface{}{
+			"err": er.Error(),
+		}
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

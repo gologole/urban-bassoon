@@ -1,6 +1,7 @@
 package users
 
 import (
+	"errors"
 	"fmt"
 	"forummodule/sqllite"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func CreateDB() gorm.DB {
 }
 
 func ServiceLogin(db gorm.DB, UserInput sqllite.LoginInput) (sqllite.UserModel, error) {
-	fmt.Println(UserInput)
+	fmt.Println("userinput=", UserInput)
 	//fmt.Println("login ", login)
 	//fmt.Println(" pass ", password)
 	model, err := sqllite.Login(db, UserInput.Login, UserInput.Password)
@@ -30,7 +31,16 @@ func ServiceLogin(db gorm.DB, UserInput sqllite.LoginInput) (sqllite.UserModel, 
 	return model, nil
 }
 
-func ServiceRegistrationUser(db gorm.DB, data sqllite.LoginInput) {
+func ServiceRegistrationUser(db gorm.DB, data sqllite.LoginInput) error {
+	fmt.Println("userinput in service=", data)
+	b := sqllite.TryLoginforReg(db, data)
+	if b == true {
+		return errors.New("User already reg")
+	}
+	if data.Login == "" || data.Password == "" {
+		return errors.New("Login and password cant be empty")
+	}
 
 	sqllite.CreateUser(db, data.Login, data.Password)
+	return nil
 }
